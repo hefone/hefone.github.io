@@ -294,7 +294,7 @@
     
 
 
-    <div class="comments" id="SOHUCS"></div>
+    <div class="comments gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -357,17 +357,26 @@
 
 
 
-  <script>
-  NexT.utils.loadComments('#SOHUCS', () => {
-    NexT.utils.getScript('https://changyan.sohu.com/upload/changyan.js', () => {
-      window.changyan.api.config({
-        appid: 'cyvl387ro',
-        conf : 'f22af2854fb839011df552be4021da65'
-      });
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7f96e59703d0e78d7813',
+      clientSecret: 'ebef89e79d2c4fe34e1af96b8a30ce2b9d3236db',
+      repo        : 'hexo-comments',
+      owner       : 'hefone',
+      admin       : ['hefone'],
+      id          : 'a676607444a8bc8b150c9a3aff884e61',
+      proxy       : 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
     });
-  });
-  </script>
-  <script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>

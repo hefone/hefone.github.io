@@ -313,22 +313,6 @@
     </span>
 
   
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Changyan：</span>
-    
-    
-      <a title="changyan" href="/PC/mmedia%E6%B5%8B%E8%AF%95.html#SOHUCS" itemprop="discussionUrl">
-        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="PC/mmedia测试.html" itemprop="commentCount"></span>
-      </a>
-    
-  </span>
-  
-  
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
         <i class="far fa-file-word"></i>
@@ -408,9 +392,9 @@
 <figure class="highlight jinja"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">mmedia</span> &quot;bilibili&quot; &quot;bvid:BV15N41197pg&quot; %&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>效果：</strong></p>
-<style>.bbplayer{width: 100%; max-width: 850px; margin: auto}</style><div class="bbplayer"><iframe class="bbplayer" id="mmedia-EVMfnsKbMqotIctT" src="https://player.bilibili.com/player.html?bvid=BV15N41197pg&page=1&high_quality=1&danmaku=true" allowfullscreen="allowfullscreen" scrolling="no" border="0" frameborder="0" framespacing="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups"></iframe></div><script> document.getElementById("mmedia-EVMfnsKbMqotIctT").style.height=document.getElementById("mmedia-EVMfnsKbMqotIctT").scrollWidth*0.76+"px";
+<style>.bbplayer{width: 100%; max-width: 850px; margin: auto}</style><div class="bbplayer"><iframe class="bbplayer" id="mmedia-eJQqxrXWUXyWcLfr" src="https://player.bilibili.com/player.html?bvid=BV15N41197pg&page=1&high_quality=1&danmaku=true" allowfullscreen="allowfullscreen" scrolling="no" border="0" frameborder="0" framespacing="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups"></iframe></div><script> document.getElementById("mmedia-eJQqxrXWUXyWcLfr").style.height=document.getElementById("mmedia-eJQqxrXWUXyWcLfr").scrollWidth*0.76+"px";
     window.onresize = function(){
-      document.getElementById("mmedia-EVMfnsKbMqotIctT").style.height=document.getElementById("mmedia-EVMfnsKbMqotIctT").scrollWidth*0.76+"px";
+      document.getElementById("mmedia-eJQqxrXWUXyWcLfr").style.height=document.getElementById("mmedia-eJQqxrXWUXyWcLfr").scrollWidth*0.76+"px";
     }; </script>
 
 <h1 id="2-chkconfig命令与systemctl命令对比"><a href="#2-chkconfig命令与systemctl命令对比" class="headerlink" title="2.chkconfig命令与systemctl命令对比"></a>2.chkconfig命令与systemctl命令对比</h1><table>
@@ -598,7 +582,7 @@
 
 
 
-    <div class="comments" id="SOHUCS"></div>
+    <div class="comments gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -661,17 +645,26 @@
 
 
 
-  <script>
-  NexT.utils.loadComments('#SOHUCS', () => {
-    NexT.utils.getScript('https://changyan.sohu.com/upload/changyan.js', () => {
-      window.changyan.api.config({
-        appid: 'cyvl387ro',
-        conf : 'f22af2854fb839011df552be4021da65'
-      });
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7f96e59703d0e78d7813',
+      clientSecret: 'ebef89e79d2c4fe34e1af96b8a30ce2b9d3236db',
+      repo        : 'hexo-comments',
+      owner       : 'hefone',
+      admin       : ['hefone'],
+      id          : 'f4e902e0474deeeac3267b2cb3a0c18a',
+      proxy       : 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
     });
-  });
-  </script>
-  <script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
