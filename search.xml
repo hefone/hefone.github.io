@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Systemctl的使用</title>
+    <url>/PC/Systemctl%E7%9A%84%E4%BD%BF%E7%94%A8.html</url>
+    <content><![CDATA[<p>CentOS 7开始，开始使用Systemd服务来代替daemon，原来管理系统启动和管理系统服务的相关命令全部由systemctl命令来代替。</p>
+<h1 id="1-service命令与systemctl命令对比"><a href="#1-service命令与systemctl命令对比" class="headerlink" title="1.service命令与systemctl命令对比"></a>1.service命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">Daemon</th>
+<th align="center">Systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">service [服务] start</td>
+<td align="center">systemctl start [unit type]</td>
+<td align="center">启动服务</td>
+</tr>
+<tr>
+<td align="center">service [服务] stop</td>
+<td align="center">systemctl stop [unit type]</td>
+<td align="center">停止服务</td>
+</tr>
+<tr>
+<td align="center">service [服务] restart</td>
+<td align="center">systemctl restart [unit type]</td>
+<td align="center">重启服务</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<p>另外：</p>
+<ul>
+<li>systemctl status：参数来查看服务运行情况</li>
+<li>systemctl reload：重新加载服务，加载更新后的配置文件（并不是所有服务都支持这个参数，比如network.service）</li>
+</ul>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#启动nginx服务</span></span><br><span class="line">$ systemctl start nginx</span><br><span class="line"><span class="comment">#停止nginx服务</span></span><br><span class="line">$ systemctl stop nginx</span><br><span class="line"><span class="comment">#重启nginx服务</span></span><br><span class="line">$ systemctl restart nginx</span><br><span class="line"><span class="comment">#查看nginx状态</span></span><br><span class="line">$ systemctl status nginx</span><br><span class="line"><span class="comment">#设置nginx开机启动</span></span><br><span class="line">$ systemctl <span class="built_in">enable</span> nginx</span><br></pre></td></tr></table></figure>
+<!-- more -->
+
+<h1 id="2-chkconfig命令与systemctl命令对比"><a href="#2-chkconfig命令与systemctl命令对比" class="headerlink" title="2.chkconfig命令与systemctl命令对比"></a>2.chkconfig命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">chkconfig</th>
+<th align="center">Systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">chkconfig [服务] on</td>
+<td align="center">systemctl enable [unit type]</td>
+<td align="center">设置服务开机启动</td>
+</tr>
+<tr>
+<td align="center">chkconfig [服务] off</td>
+<td align="center">systemctl disable [unit type]</td>
+<td align="center">设备服务禁止开机启动</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#禁止nginx开机启动</span></span><br><span class="line">$ systemctl <span class="built_in">disable</span> nginx</span><br><span class="line"><span class="comment">#设置nginx开机启动</span></span><br><span class="line">$ systemctl <span class="built_in">enable</span> nginx</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-init-命令与systemctl命令对比"><a href="#3-init-命令与systemctl命令对比" class="headerlink" title="3.init 命令与systemctl命令对比"></a>3.init 命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">init</th>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">init 0</td>
+<td align="center">systemctl poweroff</td>
+<td align="center">系统关机</td>
+</tr>
+<tr>
+<td align="center">init 6</td>
+<td align="center">systemctl reboot</td>
+<td align="center">重新启动</td>
+</tr>
+</tbody></table>
+<p><strong>其他命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#进入睡眠模式</span></span><br><span class="line">$ systemctl <span class="built_in">suspend</span></span><br><span class="line"><span class="comment">#进入休眠模式</span></span><br><span class="line">$ systemctl hibernate</span><br><span class="line"><span class="comment">#进入救援模式</span></span><br><span class="line">$ systemctl rescue</span><br><span class="line"><span class="comment">#进入紧急救援模式</span></span><br><span class="line">$ systemctl emergency</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-查看系统服务"><a href="#4-查看系统服务" class="headerlink" title="4.查看系统服务"></a>4.查看系统服务</h1><p>systemctl [command] [–type&#x3D;TYPE] [–all]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">command</span>  list-units：依据unit列出所有启动的unit。–all才会列出没启动的unit;</span><br><span class="line">         list-unit-files:依据/usr/lib/systemd/system/内的启动文件，列出启动文件列表。</span><br><span class="line">–<span class="built_in">type</span>=TYPE 为unit <span class="built_in">type</span>, 主要有service, socket, target</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#列出所有的系统服务</span></span><br><span class="line">$ systemctl</span><br><span class="line"><span class="comment">#列出所有启动unit</span></span><br><span class="line">$ systemctl list-units</span><br><span class="line"><span class="comment">#列出所有启动文件</span></span><br><span class="line">$ systemctl list-unit-files</span><br><span class="line"><span class="comment">#列出所有service类型的unit</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all</span><br><span class="line"><span class="comment">#列出 cpu电源管理机制的服务</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all | grep cpu</span><br><span class="line"><span class="comment">#列出所有target</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=target –all</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-设置系统运行级别"><a href="#5-设置系统运行级别" class="headerlink" title="5.设置系统运行级别"></a>5.设置系统运行级别</h1><p>systemctl [command] [unit.target]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">command</span>:</span><br><span class="line">    get-default 取得当前的target</span><br><span class="line">    set-default 设置指定的target为默认的运行级别</span><br><span class="line">    isolate 切换到指定的运行级别</span><br><span class="line"></span><br><span class="line">unit.target：</span><br><span class="line">    下表中的运行级别</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行级别对应表：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">init级别</th>
+<th align="center">systemctl target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">shutdown.target</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">emergency.target</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">rescure.target</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">multi-user.target</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">graphical.target</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">无</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#获得当前的运行级别</span></span><br><span class="line">$ systemctl get-default</span><br><span class="line"><span class="comment">#设置默认的运行级别为mulit-user</span></span><br><span class="line">$ systemctl set-default multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到运行级别mulit-user下</span></span><br><span class="line">$ systemctl isolate multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到图形界面下</span></span><br><span class="line">$ systemctl isolate graphical.target</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-systemctl的特殊用法"><a href="#6-systemctl的特殊用法" class="headerlink" title="6.systemctl的特殊用法"></a>6.systemctl的特殊用法</h1><table>
+<thead>
+<tr>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">systemctl is-active [unit type]</td>
+<td align="center">查看服务是否运行</td>
+</tr>
+<tr>
+<td align="center">systemctl is-enable [unit type]</td>
+<td align="center">查看服务是否设置为开机启动</td>
+</tr>
+<tr>
+<td align="center">systemctl mask [unit type]</td>
+<td align="center">注销指定服务</td>
+</tr>
+<tr>
+<td align="center">systemctl unmask [unit type]</td>
+<td align="center">取消注销指定服务</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看网络服务是否启动</span></span><br><span class="line">$ systemctl is-active network.service</span><br><span class="line"><span class="comment">#检查网络服务是否设置为开机启动</span></span><br><span class="line">$ systemctl is-enabled network.service</span><br><span class="line"><span class="comment">#停止cups服务</span></span><br><span class="line">$ systemctl stop cups.service</span><br><span class="line"><span class="comment">#注销cups服务</span></span><br><span class="line">$ systemctl mask cups.service</span><br><span class="line"><span class="comment">#查看cups服务状态</span></span><br><span class="line">$ systemctl status cups.service</span><br><span class="line"><span class="comment">#取消注销cups服务</span></span><br><span class="line">$ systemctl unmask cups.service</span><br></pre></td></tr></table></figure>
+<h1 id="7-分析服务之间依赖关系"><a href="#7-分析服务之间依赖关系" class="headerlink" title="7.分析服务之间依赖关系"></a>7.分析服务之间依赖关系</h1><p>systemctl list-dependencies [unit] [–reverse]</p>
+<p>–reverse是用来检查寻哪个unit使用了这个unit</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@localhost:~<span class="comment"># systemctl get-default</span></span><br><span class="line">graphical.target</span><br><span class="line">root@localhost:~<span class="comment"># systemctl list-dependencies</span></span><br><span class="line">default.target</span><br><span class="line">● ├─accounts-daemon.service</span><br><span class="line">● ├─apport.service</span><br><span class="line">● ├─display-manager.service</span><br><span class="line">● ├─e2scrub_reap.service</span><br><span class="line">● ├─grub-common.service</span><br><span class="line">● ├─gwarp.service</span><br><span class="line">● ├─haveged.service</span><br><span class="line">● ├─qemukvmga.service</span><br><span class="line">● ├─systemd-update-utmp-runlevel.service</span><br><span class="line">● └─multi-user.target</span><br><span class="line">●   ├─apport.service</span><br><span class="line">●   ├─atd.service</span><br><span class="line">●   ├─console-setup.service</span><br><span class="line">●   ├─cron.service</span><br><span class="line">●   ├─dbus.service</span><br><span class="line">●   ├─dmesg.service</span><br><span class="line">●   ├─grub-common.service</span><br><span class="line">●   ├─grub-initrd-fallback.service</span><br><span class="line">●   ├─guestfs-firstboot.service</span><br><span class="line">●   ├─gwarp.service</span><br><span class="line">●   ├─irqbalance.service</span><br><span class="line">●   ├─lxd-agent-9p.service</span><br><span class="line">●   ├─lxd-agent.service</span><br><span class="line">●   ├─mariadb.service</span><br><span class="line">●   ├─networkd-dispatcher.service</span><br><span class="line">●   ├─networking.service</span><br><span class="line">●   ├─nginx.service</span><br><span class="line">●   ├─ondemand.service</span><br><span class="line">●   ├─open-vm-tools.service</span><br><span class="line">●   ├─php7.4-fpm.service</span><br><span class="line">●   ├─plymouth-quit-wait.service</span><br><span class="line">●   ├─plymouth-quit.service</span><br><span class="line">●   ├─pollinate.service</span><br><span class="line">●   ├─qemukvmga.service</span><br><span class="line">●   ├─rc-local.service</span><br><span class="line">●   ├─rsync.service</span><br><span class="line">●   ├─rsyslog.service</span><br><span class="line">●   ├─secureboot-db.service</span><br><span class="line">●   ├─snap-core18-1705.mount</span><br><span class="line">●   ├─snap-core18-1944.mount</span><br><span class="line">●   ├─snap-lxd-18884.mount</span><br><span class="line">●   ├─snap-lxd-19009.mount</span><br><span class="line">●   ├─snap-snapd-10707.mount</span><br><span class="line">●   ├─snap-snapd-7264.mount</span><br><span class="line">●   ├─snap.lxd.activate.service</span><br><span class="line">●   ├─snapd.apparmor.service</span><br><span class="line">●   ├─snapd.autoimport.service</span><br><span class="line">●   ├─snapd.core-fixup.service</span><br><span class="line">●   ├─snapd.recovery-chooser-trigger.service</span><br><span class="line">●   ├─snapd.seeded.service</span><br><span class="line">●   ├─snapd.service</span><br><span class="line">●   ├─ssh.service</span><br><span class="line">●   ├─systemd-ask-password-wall.path</span><br><span class="line">●   ├─systemd-logind.service</span><br><span class="line">●   ├─systemd-networkd.service</span><br><span class="line">●   ├─systemd-resolved.service</span><br><span class="line">●   ├─systemd-update-utmp-runlevel.service</span><br><span class="line">●   ├─systemd-user-sessions.service</span><br><span class="line">●   ├─thermald.service</span><br><span class="line">●   ├─ufw.service</span><br><span class="line">●   ├─unattended-upgrades.service</span><br><span class="line">●   ├─v2ray.service</span><br><span class="line">●   ├─vlmcsd.service</span><br><span class="line">●   ├─xray.service</span><br><span class="line">●   ├─basic.target</span><br><span class="line">●   │ ├─-.mount</span><br><span class="line">●   │ ├─tmp.mount</span><br><span class="line">●   │ ├─paths.target</span><br><span class="line">●   │ │ ├─acpid.path</span><br><span class="line">●   │ │ └─apport-autoreport.path</span><br><span class="line">●   │ ├─slices.target</span><br><span class="line">●   │ │ ├─-.slice</span><br><span class="line">●   │ │ └─system.slice</span><br><span class="line">●   │ ├─sockets.target</span><br><span class="line">●   │ │ ├─acpid.socket</span><br><span class="line">●   │ │ ├─apport-forward.socket</span><br><span class="line">●   │ │ ├─dbus.socket</span><br><span class="line">●   │ │ ├─dm-event.socket</span><br><span class="line">●   │ │ ├─iscsid.socket</span><br><span class="line">●   │ │ ├─multipathd.socket</span><br><span class="line">●   │ │ ├─snap.lxd.daemon.unix.socket</span><br><span class="line">●   │ │ ├─snapd.socket</span><br><span class="line">●   │ │ ├─systemd-initctl.socket</span><br><span class="line">●   │ │ ├─systemd-journald-audit.socket</span><br><span class="line">●   │ │ ├─systemd-journald-dev-log.socket</span><br><span class="line">●   │ │ ├─systemd-journald.socket</span><br><span class="line">●   │ │ ├─systemd-networkd.socket</span><br><span class="line">●   │ │ ├─systemd-udevd-control.socket</span><br><span class="line">●   │ │ ├─systemd-udevd-kernel.socket</span><br><span class="line">●   │ │ └─uuidd.socket</span><br><span class="line">●   │ ├─sysinit.target</span><br><span class="line">●   │ │ ├─apparmor.service</span><br><span class="line">●   │ │ ├─blk-availability.service</span><br><span class="line">●   │ │ ├─dev-hugepages.mount</span><br><span class="line">●   │ │ ├─dev-mqueue.mount</span><br><span class="line">●   │ │ ├─finalrd.service</span><br><span class="line">●   │ │ ├─keyboard-setup.service</span><br><span class="line">●   │ │ ├─kmod-static-nodes.service</span><br><span class="line">●   │ │ ├─lvm2-lvmpolld.socket</span><br><span class="line">●   │ │ ├─lvm2-monitor.service</span><br><span class="line">●   │ │ ├─multipathd.service</span><br><span class="line">●   │ │ ├─open-iscsi.service</span><br><span class="line">●   │ │ ├─plymouth-read-write.service</span><br><span class="line">●   │ │ ├─plymouth-start.service</span><br><span class="line">●   │ │ ├─proc-sys-fs-binfmt_misc.automount</span><br><span class="line">●   │ │ ├─setvtrgb.service</span><br><span class="line">●   │ │ ├─sys-fs-fuse-connections.mount</span><br><span class="line">●   │ │ ├─sys-kernel-config.mount</span><br><span class="line">●   │ │ ├─sys-kernel-debug.mount</span><br><span class="line">●   │ │ ├─sys-kernel-tracing.mount</span><br><span class="line">●   │ │ ├─systemd-ask-password-console.path</span><br><span class="line">●   │ │ ├─systemd-binfmt.service</span><br><span class="line">●   │ │ ├─systemd-boot-system-token.service</span><br><span class="line">●   │ │ ├─systemd-hwdb-update.service</span><br><span class="line">●   │ │ ├─systemd-journal-flush.service</span><br><span class="line">●   │ │ ├─systemd-journald.service</span><br><span class="line">●   │ │ ├─systemd-machine-id-commit.service</span><br><span class="line">●   │ │ ├─systemd-modules-load.service</span><br><span class="line">●   │ │ ├─systemd-pstore.service</span><br><span class="line">●   │ │ ├─systemd-random-seed.service</span><br><span class="line">●   │ │ ├─systemd-sysctl.service</span><br><span class="line">●   │ │ ├─systemd-sysusers.service</span><br><span class="line">●   │ │ ├─systemd-timesyncd.service</span><br><span class="line">●   │ │ ├─systemd-tmpfiles-setup-dev.service</span><br><span class="line">●   │ │ ├─systemd-tmpfiles-setup.service</span><br><span class="line">●   │ │ ├─systemd-udev-trigger.service</span><br><span class="line">●   │ │ ├─systemd-udevd.service</span><br><span class="line">●   │ │ ├─systemd-update-utmp.service</span><br><span class="line">●   │ │ ├─cryptsetup.target</span><br><span class="line">●   │ │ ├─local-fs.target</span><br><span class="line">●   │ │ │ ├─-.mount</span><br><span class="line">●   │ │ │ ├─boot.mount</span><br><span class="line">●   │ │ │ └─systemd-remount-fs.service</span><br><span class="line">●   │ │ └─swap.target</span><br><span class="line">●   │ │   └─swap.swap</span><br><span class="line">●   │ └─timers.target</span><br><span class="line">●   │   ├─apt-daily-upgrade.timer</span><br><span class="line">●   │   ├─apt-daily.timer</span><br><span class="line">●   │   ├─e2scrub_all.timer</span><br><span class="line">●   │   ├─fstrim.timer</span><br><span class="line">●   │   ├─fwupd-refresh.timer</span><br><span class="line">●   │   ├─logrotate.timer</span><br><span class="line">●   │   ├─man-db.timer</span><br><span class="line">●   │   ├─motd-news.timer</span><br><span class="line">●   │   ├─phpsessionclean.timer</span><br><span class="line">●   │   ├─snapd.snap-repair.timer</span><br><span class="line">●   │   └─systemd-tmpfiles-clean.timer</span><br><span class="line">●   ├─cloud-init.target</span><br><span class="line">●   │ ├─cloud-config.service</span><br><span class="line">●   │ ├─cloud-final.service</span><br><span class="line">●   │ ├─cloud-init-local.service</span><br><span class="line">●   │ └─cloud-init.service</span><br><span class="line">●   ├─getty.target</span><br><span class="line">●   │ ├─getty-static.service</span><br><span class="line">●   │ └─getty@tty1.service</span><br><span class="line">●   └─remote-fs.target</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-关闭网络服务"><a href="#8-关闭网络服务" class="headerlink" title="8.关闭网络服务"></a>8.关闭网络服务</h1><p>在使用systemctl关闭网络服务时有一些特殊,需要同时关闭unit.servce和unit.socket。</p>
+<p><strong>使用systemctl查看开启的sshd服务：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@www system]<span class="comment">#  systemctl list-units --all | grep sshd</span></span><br><span class="line">sshd-keygen.service loaded inactive dead        OpenSSH Server Key Generation</span><br><span class="line">sshd.service        loaded active   running     OpenSSH server daemon</span><br><span class="line">sshd.socket         loaded inactive dead        OpenSSH Server Socket</span><br></pre></td></tr></table></figure>
+
+<p>可以看到系统同时开启了sshd.service和sshd.socket，如果只闭关了sshd.service，那么sshd.socket还在监听网络，在网络上有要求连接sshd时就会启动sshd.service。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl stop sshd.service</span><br><span class="line">systemctl stop sshd.socket</span><br><span class="line">systemctl <span class="built_in">disable</span> sshd.service sshd.socket</span><br></pre></td></tr></table></figure>
+
+<p>查看是否关闭22端口</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -lnp | grep sshd</span><br></pre></td></tr></table></figure>
+
+<br/>
+转自<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTI0ODY4NDAvYXJ0aWNsZS9kZXRhaWxzLzUzMTYxNTc0">CSDN-somnus_小凯<i class="fa fa-external-link-alt"></i></span>]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>PC</tag>
+        <tag>Code</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Text测试</title>
+    <url>/PC/Text%E6%B5%8B%E8%AF%95.html</url>
+    <content><![CDATA[<h1 id="1-插入bilibili视频"><a href="#1-插入bilibili视频" class="headerlink" title="1.插入bilibili视频"></a>1.插入bilibili视频</h1><figure class="highlight jinja"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">mmedia</span> &quot;bilibili&quot; &quot;bvid:BV1A44y1u7PF&quot; &quot;danmaku:false&quot; %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>详细参数表：</p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">默认</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">aid</td>
+<td align="center">-</td>
+<td align="center">aid</td>
+</tr>
+<tr>
+<td align="center">bvid</td>
+<td align="center">-</td>
+<td align="center">bvid，与aid同时出现时以bvid为准</td>
+</tr>
+<tr>
+<td align="center">page</td>
+<td align="center">1</td>
+<td align="center">page</td>
+</tr>
+<tr>
+<td align="center">danmaku</td>
+<td align="center">true</td>
+<td align="center">是否有弹幕，ture or false</td>
+</tr>
+<tr>
+<td align="center">allowfullscreen</td>
+<td align="center">allowfullscreen</td>
+<td align="center">允许全屏，allowfullscreen或true允许，其他选项不允许</td>
+</tr>
+<tr>
+<td align="center">sandbox</td>
+<td align="center">见 配置</td>
+<td align="center">iframe sandbox</td>
+</tr>
+<tr>
+<td align="center">width</td>
+<td align="center">100%</td>
+<td align="center">css属性</td>
+</tr>
+<tr>
+<td align="center">max_width</td>
+<td align="center">850px</td>
+<td align="center">css 属性</td>
+</tr>
+<tr>
+<td align="center">margin</td>
+<td align="center">auto</td>
+<td align="center">css 属性</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight jinja"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">mmedia</span> &quot;bilibili&quot; &quot;bvid:BV1A44y1u7PF&quot; %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>效果：</strong></p>
+<style>.bbplayer{width: 100%; max-width: 850px; margin: auto}</style><div class="bbplayer"><iframe class="bbplayer" id="mmedia-METhgAkKUXNIGjek" src="https://player.bilibili.com/player.html?bvid=BV1A44y1u7PF&page=1&high_quality=1&danmaku=true" allowfullscreen="allowfullscreen" scrolling="no" border="0" frameborder="0" framespacing="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups"></iframe></div><script> document.getElementById("mmedia-METhgAkKUXNIGjek").style.height=document.getElementById("mmedia-METhgAkKUXNIGjek").scrollWidth*0.76+"px";
+    window.onresize = function(){
+      document.getElementById("mmedia-METhgAkKUXNIGjek").style.height=document.getElementById("mmedia-METhgAkKUXNIGjek").scrollWidth*0.76+"px";
+    }; </script>
+
+<h1 id="2-chkconfig命令与systemctl命令对比"><a href="#2-chkconfig命令与systemctl命令对比" class="headerlink" title="2.chkconfig命令与systemctl命令对比"></a>2.chkconfig命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">chkconfig</th>
+<th align="center">Systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">chkconfig [服务] on</td>
+<td align="center">systemctl enable [unit type]</td>
+<td align="center">设置服务开机启动</td>
+</tr>
+<tr>
+<td align="center">chkconfig [服务] off</td>
+<td align="center">systemctl disable [unit type]</td>
+<td align="center">设备服务禁止开机启动</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo-site&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;private&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo generate&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;clean&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo clean&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deploy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo deploy&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo server&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;hexo&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5.4.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;hexo&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^5.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-deployer-git&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^3.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-archive&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-category&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-index&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-searchdb&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.3.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-next-three&quot;</span><span class="punctuation">:</span> <span class="string">&quot;github:next-theme/hexo-next-three&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-ejs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-marked&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-stylus&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-tag-mmedia&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.1.6&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-theme-landscape&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^0.0.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-theme-next&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^8.2.2&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-word-counter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^0.0.3&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="3-init-命令与systemctl命令对比"><a href="#3-init-命令与systemctl命令对比" class="headerlink" title="3.init 命令与systemctl命令对比"></a>3.init 命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">init</th>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">init 0</td>
+<td align="center">systemctl poweroff</td>
+<td align="center">系统关机</td>
+</tr>
+<tr>
+<td align="center">init 6</td>
+<td align="center">systemctl reboot</td>
+<td align="center">重新启动</td>
+</tr>
+</tbody></table>
+<p><strong>其他命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#进入睡眠模式</span></span><br><span class="line">$ systemctl <span class="built_in">suspend</span></span><br><span class="line"><span class="comment">#进入休眠模式</span></span><br><span class="line">$ systemctl hibernate</span><br><span class="line"><span class="comment">#进入救援模式</span></span><br><span class="line">$ systemctl rescue</span><br><span class="line"><span class="comment">#进入紧急救援模式</span></span><br><span class="line">$ systemctl emergency</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-查看系统服务"><a href="#4-查看系统服务" class="headerlink" title="4.查看系统服务"></a>4.查看系统服务</h1><p>systemctl [command] [–type&#x3D;TYPE] [–all]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">command</span>  list-units：依据unit列出所有启动的unit。–all才会列出没启动的unit;</span><br><span class="line">         list-unit-files:依据/usr/lib/systemd/system/内的启动文件，列出启动文件列表。</span><br><span class="line">–<span class="built_in">type</span>=TYPE 为unit <span class="built_in">type</span>, 主要有service, socket, target</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#列出所有的系统服务</span></span><br><span class="line">$ systemctl</span><br><span class="line"><span class="comment">#列出所有启动unit</span></span><br><span class="line">$ systemctl list-units</span><br><span class="line"><span class="comment">#列出所有启动文件</span></span><br><span class="line">$ systemctl list-unit-files</span><br><span class="line"><span class="comment">#列出所有service类型的unit</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all</span><br><span class="line"><span class="comment">#列出 cpu电源管理机制的服务</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all | grep cpu</span><br><span class="line"><span class="comment">#列出所有target</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=target –all</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-设置系统运行级别"><a href="#5-设置系统运行级别" class="headerlink" title="5.设置系统运行级别"></a>5.设置系统运行级别</h1><p>systemctl [command] [unit.target]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">command</span>:</span><br><span class="line">    get-default 取得当前的target</span><br><span class="line">    set-default 设置指定的target为默认的运行级别</span><br><span class="line">    isolate 切换到指定的运行级别</span><br><span class="line"></span><br><span class="line">unit.target：</span><br><span class="line">    下表中的运行级别</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行级别对应表：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">init级别</th>
+<th align="center">systemctl target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">shutdown.target</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">emergency.target</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">rescure.target</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">multi-user.target</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">graphical.target</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">无</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#获得当前的运行级别</span></span><br><span class="line">$ systemctl get-default</span><br><span class="line"><span class="comment">#设置默认的运行级别为mulit-user</span></span><br><span class="line">$ systemctl set-default multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到运行级别mulit-user下</span></span><br><span class="line">$ systemctl isolate multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到图形界面下</span></span><br><span class="line">$ systemctl isolate graphical.target</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-systemctl的特殊用法"><a href="#6-systemctl的特殊用法" class="headerlink" title="6.systemctl的特殊用法"></a>6.systemctl的特殊用法</h1><table>
+<thead>
+<tr>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">systemctl is-active [unit type]</td>
+<td align="center">查看服务是否运行</td>
+</tr>
+<tr>
+<td align="center">systemctl is-enable [unit type]</td>
+<td align="center">查看服务是否设置为开机启动</td>
+</tr>
+<tr>
+<td align="center">systemctl mask [unit type]</td>
+<td align="center">注销指定服务</td>
+</tr>
+<tr>
+<td align="center">systemctl unmask [unit type]</td>
+<td align="center">取消注销指定服务</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看网络服务是否启动</span></span><br><span class="line">$ systemctl is-active network.service</span><br><span class="line"><span class="comment">#检查网络服务是否设置为开机启动</span></span><br><span class="line">$ systemctl is-enabled network.service</span><br><span class="line"><span class="comment">#停止cups服务</span></span><br><span class="line">$ systemctl stop cups.service</span><br><span class="line"><span class="comment">#注销cups服务</span></span><br><span class="line">$ systemctl mask cups.service</span><br><span class="line"><span class="comment">#查看cups服务状态</span></span><br><span class="line">$ systemctl status cups.service</span><br><span class="line"><span class="comment">#取消注销cups服务</span></span><br><span class="line">$ systemctl unmask cups.service</span><br></pre></td></tr></table></figure>
+<h1 id="7-分析服务之间依赖关系"><a href="#7-分析服务之间依赖关系" class="headerlink" title="7.分析服务之间依赖关系"></a>7.分析服务之间依赖关系</h1><p>systemctl list-dependencies [unit] [–reverse]</p>
+<p>–reverse是用来检查寻哪个unit使用了这个unit</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@localhost:~<span class="comment"># systemctl get-default</span></span><br><span class="line">graphical.target</span><br><span class="line">root@localhost:~<span class="comment"># systemctl list-dependencies</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="8-关闭网络服务"><a href="#8-关闭网络服务" class="headerlink" title="8.关闭网络服务"></a>8.关闭网络服务</h1><p>在使用systemctl关闭网络服务时有一些特殊,需要同时关闭unit.servce和unit.socket。</p>
+<p><strong>使用systemctl查看开启的sshd服务：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@www system]<span class="comment">#  systemctl list-units --all | grep sshd</span></span><br><span class="line">sshd-keygen.service loaded inactive dead        OpenSSH Server Key Generation</span><br><span class="line">sshd.service        loaded active   running     OpenSSH server daemon</span><br><span class="line">sshd.socket         loaded inactive dead        OpenSSH Server Socket</span><br></pre></td></tr></table></figure>
+
+<p>可以看到系统同时开启了sshd.service和sshd.socket，如果只闭关了sshd.service，那么sshd.socket还在监听网络，在网络上有要求连接sshd时就会启动sshd.service。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl stop sshd.service</span><br><span class="line">systemctl stop sshd.socket</span><br><span class="line">systemctl <span class="built_in">disable</span> sshd.service sshd.socket</span><br></pre></td></tr></table></figure>
+
+<p>查看是否关闭22端口</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -lnp | grep sshd</span><br></pre></td></tr></table></figure>
+
+<br/>
+转自<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTI0ODY4NDAvYXJ0aWNsZS9kZXRhaWxzLzUzMTYxNTc0">CSDN-somnus_小凯<i class="fa fa-external-link-alt"></i></span>]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>PC</tag>
+        <tag>Code</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mmedia测试</title>
+    <url>/PC/mmedia%E6%B5%8B%E8%AF%95.html</url>
+    <content><![CDATA[<h1 id="1-插入bilibili视频"><a href="#1-插入bilibili视频" class="headerlink" title="1.插入bilibili视频"></a>1.插入bilibili视频</h1><figure class="highlight jinja"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">mmedia</span> &quot;bilibili&quot; &quot;bvid:BV15N41197pg&quot; &quot;danmaku:false&quot; %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>详细参数表：</p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">默认</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">aid</td>
+<td align="center">-</td>
+<td align="center">aid</td>
+</tr>
+<tr>
+<td align="center">bvid</td>
+<td align="center">-</td>
+<td align="center">bvid，与aid同时出现时以bvid为准</td>
+</tr>
+<tr>
+<td align="center">page</td>
+<td align="center">1</td>
+<td align="center">page</td>
+</tr>
+<tr>
+<td align="center">danmaku</td>
+<td align="center">true</td>
+<td align="center">是否有弹幕，ture or false</td>
+</tr>
+<tr>
+<td align="center">allowfullscreen</td>
+<td align="center">allowfullscreen</td>
+<td align="center">允许全屏，allowfullscreen或true允许，其他选项不允许</td>
+</tr>
+<tr>
+<td align="center">sandbox</td>
+<td align="center">见 配置</td>
+<td align="center">iframe sandbox</td>
+</tr>
+<tr>
+<td align="center">width</td>
+<td align="center">100%</td>
+<td align="center">css属性</td>
+</tr>
+<tr>
+<td align="center">max_width</td>
+<td align="center">850px</td>
+<td align="center">css 属性</td>
+</tr>
+<tr>
+<td align="center">margin</td>
+<td align="center">auto</td>
+<td align="center">css 属性</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight jinja"><table><tr><td class="code"><pre><span class="line"><span class="template-tag">&#123;% <span class="name">mmedia</span> &quot;bilibili&quot; &quot;bvid:BV15N41197pg&quot; %&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>效果：</strong></p>
+<style>.bbplayer{width: 100%; max-width: 850px; margin: auto}</style><div class="bbplayer"><iframe class="bbplayer" id="mmedia-swqiQNBAFSDbrNQN" src="https://player.bilibili.com/player.html?bvid=BV15N41197pg&page=1&high_quality=1&danmaku=true" allowfullscreen="allowfullscreen" scrolling="no" border="0" frameborder="0" framespacing="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups"></iframe></div><script> document.getElementById("mmedia-swqiQNBAFSDbrNQN").style.height=document.getElementById("mmedia-swqiQNBAFSDbrNQN").scrollWidth*0.76+"px";
+    window.onresize = function(){
+      document.getElementById("mmedia-swqiQNBAFSDbrNQN").style.height=document.getElementById("mmedia-swqiQNBAFSDbrNQN").scrollWidth*0.76+"px";
+    }; </script>
+
+<h1 id="2-chkconfig命令与systemctl命令对比"><a href="#2-chkconfig命令与systemctl命令对比" class="headerlink" title="2.chkconfig命令与systemctl命令对比"></a>2.chkconfig命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">chkconfig</th>
+<th align="center">Systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">chkconfig [服务] on</td>
+<td align="center">systemctl enable [unit type]</td>
+<td align="center">设置服务开机启动</td>
+</tr>
+<tr>
+<td align="center">chkconfig [服务] off</td>
+<td align="center">systemctl disable [unit type]</td>
+<td align="center">设备服务禁止开机启动</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo-site&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;private&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo generate&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;clean&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo clean&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deploy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo deploy&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hexo server&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;hexo&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5.4.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;hexo&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^5.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-deployer-git&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^3.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-archive&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-category&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-index&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-searchdb&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.3.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-generator-tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-next-three&quot;</span><span class="punctuation">:</span> <span class="string">&quot;github:next-theme/hexo-next-three&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-ejs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-marked&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-renderer-stylus&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-tag-mmedia&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.1.6&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-theme-landscape&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^0.0.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-theme-next&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^8.2.2&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hexo-word-counter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^0.0.3&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="3-init-命令与systemctl命令对比"><a href="#3-init-命令与systemctl命令对比" class="headerlink" title="3.init 命令与systemctl命令对比"></a>3.init 命令与systemctl命令对比</h1><table>
+<thead>
+<tr>
+<th align="center">init</th>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">init 0</td>
+<td align="center">systemctl poweroff</td>
+<td align="center">系统关机</td>
+</tr>
+<tr>
+<td align="center">init 6</td>
+<td align="center">systemctl reboot</td>
+<td align="center">重新启动</td>
+</tr>
+</tbody></table>
+<p><strong>其他命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#进入睡眠模式</span></span><br><span class="line">$ systemctl <span class="built_in">suspend</span></span><br><span class="line"><span class="comment">#进入休眠模式</span></span><br><span class="line">$ systemctl hibernate</span><br><span class="line"><span class="comment">#进入救援模式</span></span><br><span class="line">$ systemctl rescue</span><br><span class="line"><span class="comment">#进入紧急救援模式</span></span><br><span class="line">$ systemctl emergency</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-查看系统服务"><a href="#4-查看系统服务" class="headerlink" title="4.查看系统服务"></a>4.查看系统服务</h1><p>systemctl [command] [–type&#x3D;TYPE] [–all]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">command</span>  list-units：依据unit列出所有启动的unit。–all才会列出没启动的unit;</span><br><span class="line">         list-unit-files:依据/usr/lib/systemd/system/内的启动文件，列出启动文件列表。</span><br><span class="line">–<span class="built_in">type</span>=TYPE 为unit <span class="built_in">type</span>, 主要有service, socket, target</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#列出所有的系统服务</span></span><br><span class="line">$ systemctl</span><br><span class="line"><span class="comment">#列出所有启动unit</span></span><br><span class="line">$ systemctl list-units</span><br><span class="line"><span class="comment">#列出所有启动文件</span></span><br><span class="line">$ systemctl list-unit-files</span><br><span class="line"><span class="comment">#列出所有service类型的unit</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all</span><br><span class="line"><span class="comment">#列出 cpu电源管理机制的服务</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=service –all | grep cpu</span><br><span class="line"><span class="comment">#列出所有target</span></span><br><span class="line">$ systemctl list-units –<span class="built_in">type</span>=target –all</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-设置系统运行级别"><a href="#5-设置系统运行级别" class="headerlink" title="5.设置系统运行级别"></a>5.设置系统运行级别</h1><p>systemctl [command] [unit.target]</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">command</span>:</span><br><span class="line">    get-default 取得当前的target</span><br><span class="line">    set-default 设置指定的target为默认的运行级别</span><br><span class="line">    isolate 切换到指定的运行级别</span><br><span class="line"></span><br><span class="line">unit.target：</span><br><span class="line">    下表中的运行级别</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行级别对应表：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">init级别</th>
+<th align="center">systemctl target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">shutdown.target</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">emergency.target</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">rescure.target</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">multi-user.target</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">graphical.target</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">无</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#获得当前的运行级别</span></span><br><span class="line">$ systemctl get-default</span><br><span class="line"><span class="comment">#设置默认的运行级别为mulit-user</span></span><br><span class="line">$ systemctl set-default multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到运行级别mulit-user下</span></span><br><span class="line">$ systemctl isolate multi-user.target</span><br><span class="line"><span class="comment">#在不重启的情况下，切换到图形界面下</span></span><br><span class="line">$ systemctl isolate graphical.target</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-systemctl的特殊用法"><a href="#6-systemctl的特殊用法" class="headerlink" title="6.systemctl的特殊用法"></a>6.systemctl的特殊用法</h1><table>
+<thead>
+<tr>
+<th align="center">systemctl</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">systemctl is-active [unit type]</td>
+<td align="center">查看服务是否运行</td>
+</tr>
+<tr>
+<td align="center">systemctl is-enable [unit type]</td>
+<td align="center">查看服务是否设置为开机启动</td>
+</tr>
+<tr>
+<td align="center">systemctl mask [unit type]</td>
+<td align="center">注销指定服务</td>
+</tr>
+<tr>
+<td align="center">systemctl unmask [unit type]</td>
+<td align="center">取消注销指定服务</td>
+</tr>
+</tbody></table>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看网络服务是否启动</span></span><br><span class="line">$ systemctl is-active network.service</span><br><span class="line"><span class="comment">#检查网络服务是否设置为开机启动</span></span><br><span class="line">$ systemctl is-enabled network.service</span><br><span class="line"><span class="comment">#停止cups服务</span></span><br><span class="line">$ systemctl stop cups.service</span><br><span class="line"><span class="comment">#注销cups服务</span></span><br><span class="line">$ systemctl mask cups.service</span><br><span class="line"><span class="comment">#查看cups服务状态</span></span><br><span class="line">$ systemctl status cups.service</span><br><span class="line"><span class="comment">#取消注销cups服务</span></span><br><span class="line">$ systemctl unmask cups.service</span><br></pre></td></tr></table></figure>
+<h1 id="7-分析服务之间依赖关系"><a href="#7-分析服务之间依赖关系" class="headerlink" title="7.分析服务之间依赖关系"></a>7.分析服务之间依赖关系</h1><p>systemctl list-dependencies [unit] [–reverse]</p>
+<p>–reverse是用来检查寻哪个unit使用了这个unit</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@localhost:~<span class="comment"># systemctl get-default</span></span><br><span class="line">graphical.target</span><br><span class="line">root@localhost:~<span class="comment"># systemctl list-dependencies</span></span><br><span class="line">default.target</span><br><span class="line">● ├─accounts-daemon.service</span><br><span class="line">● ├─apport.service</span><br><span class="line">● ├─display-manager.service</span><br><span class="line">● ├─e2scrub_reap.service</span><br><span class="line">● ├─grub-common.service</span><br><span class="line">● ├─gwarp.service</span><br><span class="line">● ├─haveged.service</span><br><span class="line">● ├─qemukvmga.service</span><br><span class="line">● ├─systemd-update-utmp-runlevel.service</span><br><span class="line">● └─multi-user.target</span><br><span class="line">●   ├─apport.service</span><br><span class="line">●   ├─atd.service</span><br><span class="line">●   ├─console-setup.service</span><br><span class="line">●   ├─cron.service</span><br><span class="line">●   ├─dbus.service</span><br><span class="line">●   ├─dmesg.service</span><br><span class="line">●   ├─grub-common.service</span><br><span class="line">●   ├─grub-initrd-fallback.service</span><br><span class="line">●   ├─guestfs-firstboot.service</span><br><span class="line">●   ├─gwarp.service</span><br><span class="line">●   ├─irqbalance.service</span><br><span class="line">●   ├─lxd-agent-9p.service</span><br><span class="line">●   ├─lxd-agent.service</span><br><span class="line">●   ├─mariadb.service</span><br><span class="line">●   ├─networkd-dispatcher.service</span><br><span class="line">●   ├─networking.service</span><br><span class="line">●   ├─nginx.service</span><br><span class="line">●   ├─ondemand.service</span><br><span class="line">●   ├─open-vm-tools.service</span><br><span class="line">●   ├─php7.4-fpm.service</span><br><span class="line">●   ├─plymouth-quit-wait.service</span><br><span class="line">●   ├─plymouth-quit.service</span><br><span class="line">●   ├─pollinate.service</span><br><span class="line">●   ├─qemukvmga.service</span><br><span class="line">●   ├─rc-local.service</span><br><span class="line">●   ├─rsync.service</span><br><span class="line">●   ├─rsyslog.service</span><br><span class="line">●   ├─secureboot-db.service</span><br><span class="line">●   ├─snap-core18-1705.mount</span><br><span class="line">●   ├─snap-core18-1944.mount</span><br><span class="line">●   ├─snap-lxd-18884.mount</span><br><span class="line">●   ├─snap-lxd-19009.mount</span><br><span class="line">●   ├─snap-snapd-10707.mount</span><br><span class="line">●   ├─snap-snapd-7264.mount</span><br><span class="line">●   ├─snap.lxd.activate.service</span><br><span class="line">●   ├─snapd.apparmor.service</span><br><span class="line">●   ├─snapd.autoimport.service</span><br><span class="line">●   ├─snapd.core-fixup.service</span><br><span class="line">●   ├─snapd.recovery-chooser-trigger.service</span><br><span class="line">●   ├─snapd.seeded.service</span><br><span class="line">●   ├─snapd.service</span><br><span class="line">●   ├─ssh.service</span><br><span class="line">●   ├─systemd-ask-password-wall.path</span><br><span class="line">●   ├─systemd-logind.service</span><br><span class="line">●   ├─systemd-networkd.service</span><br><span class="line">●   ├─systemd-resolved.service</span><br><span class="line">●   ├─systemd-update-utmp-runlevel.service</span><br><span class="line">●   ├─systemd-user-sessions.service</span><br><span class="line">●   ├─thermald.service</span><br><span class="line">●   ├─ufw.service</span><br><span class="line">●   ├─unattended-upgrades.service</span><br><span class="line">●   ├─v2ray.service</span><br><span class="line">●   ├─vlmcsd.service</span><br><span class="line">●   ├─xray.service</span><br><span class="line">●   ├─basic.target</span><br><span class="line">●   │ ├─-.mount</span><br><span class="line">●   │ ├─tmp.mount</span><br><span class="line">●   │ ├─paths.target</span><br><span class="line">●   │ │ ├─acpid.path</span><br><span class="line">●   │ │ └─apport-autoreport.path</span><br><span class="line">●   │ ├─slices.target</span><br><span class="line">●   │ │ ├─-.slice</span><br><span class="line">●   │ │ └─system.slice</span><br><span class="line">●   │ ├─sockets.target</span><br><span class="line">●   │ │ ├─acpid.socket</span><br><span class="line">●   │ │ ├─apport-forward.socket</span><br><span class="line">●   │ │ ├─dbus.socket</span><br><span class="line">●   │ │ ├─dm-event.socket</span><br><span class="line">●   │ │ ├─iscsid.socket</span><br><span class="line">●   │ │ ├─multipathd.socket</span><br><span class="line">●   │ │ ├─snap.lxd.daemon.unix.socket</span><br><span class="line">●   │ │ ├─snapd.socket</span><br><span class="line">●   │ │ ├─systemd-initctl.socket</span><br><span class="line">●   │ │ ├─systemd-journald-audit.socket</span><br><span class="line">●   │ │ ├─systemd-journald-dev-log.socket</span><br><span class="line">●   │ │ ├─systemd-journald.socket</span><br><span class="line">●   │ │ ├─systemd-networkd.socket</span><br><span class="line">●   │ │ ├─systemd-udevd-control.socket</span><br><span class="line">●   │ │ ├─systemd-udevd-kernel.socket</span><br><span class="line">●   │ │ └─uuidd.socket</span><br><span class="line">●   │ ├─sysinit.target</span><br><span class="line">●   │ │ ├─apparmor.service</span><br><span class="line">●   │ │ ├─blk-availability.service</span><br><span class="line">●   │ │ ├─dev-hugepages.mount</span><br><span class="line">●   │ │ ├─dev-mqueue.mount</span><br><span class="line">●   │ │ ├─finalrd.service</span><br><span class="line">●   │ │ ├─keyboard-setup.service</span><br><span class="line">●   │ │ ├─kmod-static-nodes.service</span><br><span class="line">●   │ │ ├─lvm2-lvmpolld.socket</span><br><span class="line">●   │ │ ├─lvm2-monitor.service</span><br><span class="line">●   │ │ ├─multipathd.service</span><br><span class="line">●   │ │ ├─open-iscsi.service</span><br><span class="line">●   │ │ ├─plymouth-read-write.service</span><br><span class="line">●   │ │ ├─plymouth-start.service</span><br><span class="line">●   │ │ ├─proc-sys-fs-binfmt_misc.automount</span><br><span class="line">●   │ │ ├─setvtrgb.service</span><br><span class="line">●   │ │ ├─sys-fs-fuse-connections.mount</span><br><span class="line">●   │ │ ├─sys-kernel-config.mount</span><br><span class="line">●   │ │ ├─sys-kernel-debug.mount</span><br><span class="line">●   │ │ ├─sys-kernel-tracing.mount</span><br><span class="line">●   │ │ ├─systemd-ask-password-console.path</span><br><span class="line">●   │ │ ├─systemd-binfmt.service</span><br><span class="line">●   │ │ ├─systemd-boot-system-token.service</span><br><span class="line">●   │ │ ├─systemd-hwdb-update.service</span><br><span class="line">●   │ │ ├─systemd-journal-flush.service</span><br><span class="line">●   │ │ ├─systemd-journald.service</span><br><span class="line">●   │ │ ├─systemd-machine-id-commit.service</span><br><span class="line">●   │ │ ├─systemd-modules-load.service</span><br><span class="line">●   │ │ ├─systemd-pstore.service</span><br><span class="line">●   │ │ ├─systemd-random-seed.service</span><br><span class="line">●   │ │ ├─systemd-sysctl.service</span><br><span class="line">●   │ │ ├─systemd-sysusers.service</span><br><span class="line">●   │ │ ├─systemd-timesyncd.service</span><br><span class="line">●   │ │ ├─systemd-tmpfiles-setup-dev.service</span><br><span class="line">●   │ │ ├─systemd-tmpfiles-setup.service</span><br><span class="line">●   │ │ ├─systemd-udev-trigger.service</span><br><span class="line">●   │ │ ├─systemd-udevd.service</span><br><span class="line">●   │ │ ├─systemd-update-utmp.service</span><br><span class="line">●   │ │ ├─cryptsetup.target</span><br><span class="line">●   │ │ ├─local-fs.target</span><br><span class="line">●   │ │ │ ├─-.mount</span><br><span class="line">●   │ │ │ ├─boot.mount</span><br><span class="line">●   │ │ │ └─systemd-remount-fs.service</span><br><span class="line">●   │ │ └─swap.target</span><br><span class="line">●   │ │   └─swap.swap</span><br><span class="line">●   │ └─timers.target</span><br><span class="line">●   │   ├─apt-daily-upgrade.timer</span><br><span class="line">●   │   ├─apt-daily.timer</span><br><span class="line">●   │   ├─e2scrub_all.timer</span><br><span class="line">●   │   ├─fstrim.timer</span><br><span class="line">●   │   ├─fwupd-refresh.timer</span><br><span class="line">●   │   ├─logrotate.timer</span><br><span class="line">●   │   ├─man-db.timer</span><br><span class="line">●   │   ├─motd-news.timer</span><br><span class="line">●   │   ├─phpsessionclean.timer</span><br><span class="line">●   │   ├─snapd.snap-repair.timer</span><br><span class="line">●   │   └─systemd-tmpfiles-clean.timer</span><br><span class="line">●   ├─cloud-init.target</span><br><span class="line">●   │ ├─cloud-config.service</span><br><span class="line">●   │ ├─cloud-final.service</span><br><span class="line">●   │ ├─cloud-init-local.service</span><br><span class="line">●   │ └─cloud-init.service</span><br><span class="line">●   ├─getty.target</span><br><span class="line">●   │ ├─getty-static.service</span><br><span class="line">●   │ └─getty@tty1.service</span><br><span class="line">●   └─remote-fs.target</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-关闭网络服务"><a href="#8-关闭网络服务" class="headerlink" title="8.关闭网络服务"></a>8.关闭网络服务</h1><p>在使用systemctl关闭网络服务时有一些特殊,需要同时关闭unit.servce和unit.socket。</p>
+<p><strong>使用systemctl查看开启的sshd服务：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@www system]<span class="comment">#  systemctl list-units --all | grep sshd</span></span><br><span class="line">sshd-keygen.service loaded inactive dead        OpenSSH Server Key Generation</span><br><span class="line">sshd.service        loaded active   running     OpenSSH server daemon</span><br><span class="line">sshd.socket         loaded inactive dead        OpenSSH Server Socket</span><br></pre></td></tr></table></figure>
+
+<p>可以看到系统同时开启了sshd.service和sshd.socket，如果只闭关了sshd.service，那么sshd.socket还在监听网络，在网络上有要求连接sshd时就会启动sshd.service。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl stop sshd.service</span><br><span class="line">systemctl stop sshd.socket</span><br><span class="line">systemctl <span class="built_in">disable</span> sshd.service sshd.socket</span><br></pre></td></tr></table></figure>
+
+<p>查看是否关闭22端口</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -lnp | grep sshd</span><br></pre></td></tr></table></figure>
+
+<br/>
+转自<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTI0ODY4NDAvYXJ0aWNsZS9kZXRhaWxzLzUzMTYxNTc0">CSDN-somnus_小凯<i class="fa fa-external-link-alt"></i></span>]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>PC</tag>
+        <tag>Code</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>与儿子的第一封信</title>
+    <url>/Diary/%E4%B8%8E%E5%84%BF%E5%AD%90%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B0%81%E4%BF%A1.html</url>
+    <content><![CDATA[<p>&amp;emsp;&amp;emsp;寒假，老师给三年级的儿子布置了作业，写一封家书。儿子赖着不写（实际是我也有点懒），于是在返回工地的最后一天，抄起多年不用的笔杆子，给儿子写了一封信。</p>
+<h1 id="1-写给儿子的信"><a href="#1-写给儿子的信" class="headerlink" title="1.写给儿子的信"></a>1.写给儿子的信</h1><span id="more"></span>
+
+<blockquote>
+<p>亲爱的铭皓：<br>&amp;emsp;&amp;emsp;爸爸无论在哪里，都很想念你，每次休假回家的时候看到你又长高了，爸爸心里都很高兴。因为工作原因，原谅爸爸不能天天陪在你身旁，虽然每天视频都能见到你，有些话爸爸还是想和你说一下。<br>&amp;emsp;&amp;emsp;爸爸妈妈始终希望你能快乐成长，不要把学习当成负担，找到学习的快乐和动力，爸爸不在意你将来有多么优秀，只是希望你成为一个对家庭尽责任，对社会有贡献的人。说到这，爸爸还是要批评你几句，要加强自控，不要事事都让妈妈操心。逐渐长大了，就是逐步懂事了。还记得保尔柯察金是怎么说的吗？“人最宝贵的东西是生命，生命对我们只有一次。一个人的生命应当这样度过：当他回首往事的时候,不因虚度年华而悔恨,也不因碌碌无为而羞愧。”所以，希望你能像保尔那样坚强、坚定、有担当，做一个懂事的孩子。<br>&amp;emsp;&amp;emsp;再次，爸爸想你，爸爸爱你。</p>
+<p align="right">爸爸&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</p>
+<p align="right">2021年2月27日&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</p>
+</blockquote>
+<p>&amp;emsp;&amp;emsp;第二天我返回工地，赶了一天的路，下午在火车上，媳妇说孩子哭了，哭了一小时，想爸爸了。我心里顿时很不是滋味，却也只能安慰了几句。晚上我到了宿舍，看到媳妇发来了孩子的回信。</p>
+<h1 id="2-儿子的回信"><a href="#2-儿子的回信" class="headerlink" title="2.儿子的回信"></a>2.儿子的回信</h1><p><img src="https://file.lolo17.com/Hexo/Pic/letter.jpg" alt="儿子的回信" title="写的时候估计有些激动，错误挺多的"><br><br/></p>
+<p> <strong>翻译如下</strong>：</p>
+<blockquote>
+<p>亲爱的爸爸：<br>&amp;emsp;&amp;emsp;今天您又去上班了，刚把您送上车，我哭了，回想起咱一起度过的这一个多月寒假的日子。一起踢球，一起下象棋，一起放烟花，欢声笑语仿佛就在眼前。时间如同奔跑的小马，一晃过去了。<br>&amp;emsp;&amp;emsp;在假期里，你给我聊起自己的工作及获得的荣誉，我也不甘示弱得说起自己的成绩。读书时，遇到书中的人物，热烈的讨论，各持己见，有时面对我的滔滔不绝，您败下阵来，说：“铭皓长大了，有自己的看法了。”我都很自豪。<br>&amp;emsp;&amp;emsp;明天我也要上学了，期待一个月后的休班。您放心，我一定听妈妈的话，好好学习。<br>&amp;emsp;&amp;emsp;爸爸，我爱您。</p>
+<p align="right">儿子：铭皓&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</p>
+<p align="right">2021.2.27&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</p>
+</blockquote>
+<p><strong>读着孩子的信，看着稚嫩的字体，却表达着最真实的情感。我前后一共看了5遍，一遍比一遍感动，儿子确实长大了，懂事了。</strong></p>
+<p>忽然想起这首歌：</p>
+<blockquote>
+<p>给儿子 - 徐誉滕<br>词：徐誉滕<br>曲：徐誉滕<br>你出生在一个缤纷的世界<br>你的家庭是那么温馨<br>就算人生再像是一场比赛<br>也没有悲惨的身世为你博得同情分<br>我不一定是你的朋友你的靠山<br>你生命中的摇钱树<br>但是我会永远的在你身后<br>因为我是你的爸爸你的父亲<br>我希望你能像妈妈一样善良<br>能像我一样爱坚持<br>可你将来要做什么样的人<br>还看你自己<br>这世界瞬息万变<br>从来不会为哪一个人而停止<br>所以要记住祖先说过的话<br>叫老易至惜此时<br>如果你觉得累<br>你可以放下来歇一歇<br>成败无所谓<br>开心最可贵<br>别怕人说你笨<br>别怕太多太多学不会<br>聪明太可危<br>白痴不可悲<br>生命就这样一代一代一代一代一代<br>不息地轮回着<br>苦辣酸甜每个人的几十年<br>就像那首李老师所写的凡人歌<br>我希望你能像妈妈一样善良<br>能像我一样爱坚持<br>可你将来要做什么样的人<br>还看你自己<br>这世界瞬息万变<br>从来不会为哪一个人而停止<br>所以要记住祖先说过的话<br>叫老易至惜此时<br>你将来能体会<br>周围有太多是是非非<br>没有错与对<br>只有问心无愧<br>走的路受的罪<br>男人最珍贵的是眼泪<br>别轻易的流<br>人生没有后退<br>你出生在一个缤纷的世界<br>你的家庭是那么温馨<br>在你心中爸爸可以丑丑的<br>但妈妈必须永远是美美的美美的</p>
+</blockquote>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer@1/dist/APlayer.min.js"></script><div id="mmedia-wSfcFMjSxYkAeAsU"></div><script> var wSfcFMjSxYkAeAsU_options = JSON.parse('{\"autoplay\":false,\"audio\":[{\"name\":\"给儿子\",\"artist\":\"徐誉滕\",\"url\":\"https://file.lolo17.com/Hexo/Sound/give.mp3\"}]}'); wSfcFMjSxYkAeAsU_options.container = document.getElementById("mmedia-wSfcFMjSxYkAeAsU"); const ap_wSfcFMjSxYkAeAsU = new APlayer(wSfcFMjSxYkAeAsU_options); </script>
+
+<h1 id="3-三英战吕布-铭皓版"><a href="#3-三英战吕布-铭皓版" class="headerlink" title="3.三英战吕布-铭皓版"></a>3.三英战吕布-铭皓版</h1><p><strong>结尾送福利</strong></p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer@1/dist/APlayer.min.js"></script><div id="mmedia-heydqHXehUWEEHqf"></div><script> var heydqHXehUWEEHqf_options = JSON.parse('{\"autoplay\":true,\"audio\":[{\"name\":\"三英战吕布\",\"artist\":\"王铭皓\",\"url\":\"https://file.lolo17.com/Hexo/Sound/syzlb.m4a\"}]}'); heydqHXehUWEEHqf_options.container = document.getElementById("mmedia-heydqHXehUWEEHqf"); const ap_heydqHXehUWEEHqf = new APlayer(heydqHXehUWEEHqf_options); </script>]]></content>
+      <categories>
+        <category>日记</category>
+      </categories>
+      <tags>
+        <tag>Diary</tag>
+        <tag>MingHao</tag>
+        <tag>Family</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>李斯--《谏逐客书》</title>
+    <url>/Note/%E6%9D%8E%E6%96%AF-%E3%80%8A%E8%B0%8F%E9%80%90%E5%AE%A2%E4%B9%A6%E3%80%8B.html</url>
+    <content><![CDATA[<p>作者：李斯&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;朝代：先秦</p>
+<h1 id="1-正文"><a href="#1-正文" class="headerlink" title="1.正文"></a>1.正文</h1><p>&amp;emsp;&amp;emsp;臣闻吏议逐客，窃以为过矣。昔穆公求士，西取由余于戎，东得百里奚于宛，迎蹇叔于宋，来邳豹、公孙支于晋。此五子者，不产于秦，而穆公用之，并国二十，遂霸西戎。孝公用商鞅之法，移风易俗，民以殷盛，国以富强，百姓乐用，诸侯亲服，获楚、魏之师，举地千里，至今治强。惠王用张仪之计，拔三川之地，西并巴、蜀，北收上郡，南取汉中，包九夷，制鄢、郢，东据成皋之险，割膏腴之壤，遂散六国之众，使之西面事秦，功施到今。昭王得范雎，废穰侯，逐华阳，强公室，杜私门，蚕食诸侯，使秦成帝业。此四君者，皆以客之功。由此观之，客何负于秦哉！向使四君却客而不内，疏士而不用，是使国无富利之实，而秦无强大之名也。</p>
+<span id="more"></span>
+
+<p>&amp;emsp;&amp;emsp;今陛下致昆山之玉，有随和之宝，垂明月之珠，服太阿之剑，乘纤离之马，建翠凤之旗，树灵鼍之鼓。此数宝者，秦不生一焉，而陛下说之，何也？必秦国之所生然后可，则是夜光之璧，不饰朝廷；犀象之器，不为玩好；郑、卫之女不充后宫，而骏良駃騠不实外厩，江南金锡不为用，西蜀丹青不为采。所以饰后宫，充下陈，娱心意，说耳目者，必出于秦然后可，则是宛珠之簪，傅玑之珥，阿缟之衣，锦绣之饰不进于前，而随俗雅化，佳冶窈窕，赵女不立于侧也。夫击瓮叩缶弹筝搏髀，而歌呼呜呜快耳者，真秦之声也；《郑》、《卫》、《桑间》，《韶》、《虞》、《武》、《象》者，异国之乐也。今弃击瓮叩缶而就《郑》、《卫》，退弹筝而取《昭》、《虞》，若是者何也？快意当前，适观而已矣。今取人则不然。不问可否，不论曲直，非秦者去，为客者逐。然则是所重者在乎色乐珠玉，而所轻者在乎人民也。此非所以跨海内、制诸侯之术也。</p>
+<p>&amp;emsp;&amp;emsp;臣闻地广者粟多，国大者人众，兵强则士勇。是以泰山不让土壤，故能成其大；河海不择细流，故能就其深；王者不却众庶，故能明其德。是以地无四方，民无异国，四时充美，鬼神降福，此五帝三王之所以无敌也。今乃弃黔首以资敌国，却宾客以业诸侯，使天下之士退而不敢西向，裹足不入秦，此所谓“藉寇兵而赍盗粮”者也。夫物不产于秦，可宝者多；士不产于秦，而愿忠者众。今逐客以资敌国，损民以益仇，内自虚而外树怨于诸侯，求国无危，不可得也。</p>
+<h1 id="2-译文"><a href="#2-译文" class="headerlink" title="2.译文"></a>2.译文</h1><p>&amp;emsp;&amp;emsp;我听说官吏在商议驱逐客卿这件事，私下里认为是错误的。从前秦穆公寻求贤士，西边从西戎取得由余，东边从宛地得到百里奚，又从宋国迎来蹇叔，还从晋国招来丕豹、公孙支。这五位贤人，不生在秦国，而秦穆公重用他们，吞并国家二十多个，于是称霸西戎。秦孝公采用商鞅的新法，移风易俗，人民因此殷实，国家因此富强，百姓乐意为国效力，诸侯亲附归服，战胜楚国、魏国的军队，攻取土地上千里，至今政治安定，国力强盛。秦惠王采纳张仪的计策，攻下三川地区，西进兼并巴、蜀两国，北上收得上郡，南下攻取汉中，席卷九夷各部，控制鄢、郢之地，东面占据成皋天险，割取肥田沃土，于是拆散六国的合纵同盟，使他们朝西事奉秦国，功烈延续到今天。昭王得到范雎，废黜穰侯，驱逐华阳君，加强·巩固了王室的权力，堵塞了权贵垄断政治的局面，蚕食诸侯领土，使秦国成就帝王大业。这四位君主，都依靠了客卿的功劳。由此看来，客卿哪有什么对不住秦国的地方呢！倘若四位君主拒绝远客而不予接纳，疏远贤士而不加任用，这就会使国家没有丰厚的实力，而让秦国没有强大的名声了。</p>
+<p>&amp;emsp;&amp;emsp;陛下罗致昆山的美玉，宫中有随侯之珠，和氏之璧，衣饰上缀着光如明月的宝珠，身上佩带着太阿宝剑，乘坐的是名贵的纤离马，树立的是以翠凤羽毛为饰的旗子，陈设的是蒙着灵鼍之皮的好鼓。这些宝贵之物，没有一种是秦国产的，而陛下却很喜欢它们，这是为什么呢？如果一定要是秦国出产的才许可采用，那么这种夜光宝玉，决不会成为秦廷的装饰；犀角、象牙雕成的器物，也不会成为陛下的玩好之物；郑、卫二地能歌善舞的女子，也不会填满陛下的后宫；北方的名骥良马，决不会充实到陛下的马房；江南的金锡不会为陛下所用，西蜀的丹青也不会作为彩饰。用以装饰后宫、广充侍妾、爽心快意、悦入耳目的所有这些都要是秦国生长、生产的然后才可用的话，那么点缀有珠宝的簪子，耳上的玉坠，丝织的衣服，锦绣的装饰，就都不会进献到陛下面前；那些闲雅变化而能随俗推移的妖冶美好的佳丽，也不会立于陛下的身旁。那敲击瓦器，拍髀弹筝，乌乌呀呀地歌唱，能快人耳目的，确真是秦国的地道音乐了；那郑、卫桑间的歌声，《韶虞》《武象》等乐曲，可算是外国的音乐了。如今陛下却抛弃了秦国地道的敲击瓦器的音乐，而取用郑、卫淫靡悦耳之音，不要秦筝而要《韶虞》，这是为什么呢？难道不是因为外国音乐可以快意，可以满足耳目官能的需要么？可陛下对用人却不是这样，不问是否可用，不管是非曲直，凡不是秦国的就要离开，凡是客卿都要驱逐。这样做就说明，陛下所看重的，只在珠玉声色方面；而所轻视的，却是人民士众。这不是能用来驾驭天下，制服诸侯的方法啊！</p>
+<p>&amp;emsp;&amp;emsp;我听说田地广就粮食多，国家大就人口众，武器精良将士就骁勇。因此，泰山不拒绝泥土，所以能成就它的高大；江河湖海不舍弃细流，所以能成就它的深邃；有志建立王业的人不嫌弃民众，所以能彰明他的德行。因此，土地不分东西南北，百姓不论异国它邦，那样便会一年四季富裕美好，天地鬼神降赐福运，这就是五帝、三王无可匹敌的缘故。抛弃百姓使之去帮助敌国，拒绝宾客使之去事奉诸侯，使天下的贤士退却而不敢西进，裹足止步不入秦国，这就叫做“借武器给敌寇，送粮食给盗贼”啊。物品中不出产在秦国，而宝贵的却很多；贤士中不出生于秦，愿意效忠的很多。如今驱逐宾客来资助敌国，减损百姓来充实对手，内部自己造成空虚而外部在诸侯中构筑怨恨，那要谋求国家没有危难，是不可能的啊。</p>
+<h1 id="3-赏析"><a href="#3-赏析" class="headerlink" title="3.赏析"></a>3.赏析</h1><p>&amp;emsp;&amp;emsp;《谏逐客书》是李斯给秦王的一个奏章。这件事是在秦王嬴政十年。秦国宗室贵族借韩国派水工修灌溉渠，阴谋消耗秦的国力，谏秦皇下令驱逐一切客卿。秦王读了李斯这一奏章，取消了逐客令。可见本文说服力之强。</p>
+<p>&amp;emsp;&amp;emsp;作者先谈历史，以穆公、孝公、惠王、昭王四位国君召士纳贤为例，强调重用客卿之重要。接着再谈现实，作者列举秦王的爱好，诸如昆山之玉，随和之宝，明月之珠，以及所佩太阿剑，所乘之纤离之马等等，都是来自诸侯各国。</p>
+<p>&amp;emsp;&amp;emsp;实效性</p>
+<p>&amp;emsp;&amp;emsp;首先是《谏逐客书》具有明显的实效性。实效，就是要讲求实用，注重效果，这就涉及到公文的目的及功能。公文不像艺文那样，优游浸渍，潜移默化，以美感人，公文乃是“政事之先务”，它的目的是为了完成特定的公务，它的功能是可以解决实际的问题。从本质上说公文是一种实用性程式性的文书，以此区别于一般的文章或文学作品。公文所产生的客观效果是衡量公文实用性大小的一个重要尺度。所以公文撰制时必须事先预计效果，办理时讲究效率，客观上注重功效。徐望之《公牍通论》指出：“事前体察周详，令出务求实效。”这说的是下行公文。上行公文也要做到“下情不壅于上闻，谋事惟期其必达”。一篇公文，如果实用性不大，效果不显著，就很难说是上乘之作。因此，实效性显著，应是好公文的重要条件。以此看来《谏逐客书》正是具有实效性显著的特点。这篇公文最成功之处就在于，该文一上秦王，就达到预期的目的，收到满意的效果。司马迁在《李斯列传》中曾这样叙述过李斯上书的前因后果：“秦王拜斯为客卿。会韩人郑国来间秦，以作注溉渠，已而觉。秦宗室大臣皆言秦王曰：‘诸侯人来事秦者，大抵为其主游间于秦耳。请一切逐客。’李斯议亦在逐中。斯乃上书曰：“秦王乃除逐客之令，复李斯官，卒用其计谋。”当时秦王的逐客令已下，李斯也在被逐之列，而凭此上书,竟能使秦王收回成命，由逐客变为留客、用客、重客，这就不能不承认《谏逐客书》发挥了巨大的作用，公文的实效性在这里得到了最充分的体现。</p>
+<p>&amp;emsp;&amp;emsp;论断典范</p>
+<p>&amp;emsp;&amp;emsp;其次，《谏逐客书》在“对事的论断”方面堪称典范。笔者以为“对事的论断”应视为公文的一个重要特征。事是公文的内容，论断是对公文内容的表达方式。“对事的论断”体现了公文的内容与形式的统一。显然，公文须有事，刘勰所说“言事于主”、“指事造实”，徐望之所说“谋事惟期其必达”、“尚实事不尚虚文”，都指出公文的内容就是事，因为公文就是办实事的。但是公文在表达事时，不必对其来龙去脉进行具体的叙述，往往是高度概括，或者点到为止。公文对于事，主要是用“论断”的方法。正如《公牍通论》所述，“陈言论事”、“公文本质，重论断”。论断是个合成词，包含论和断两个方面。断，判断、决断之谓，对事的是非、得失、功过等表示肯定或否定的态度，对事的实施提出一定的办法。论是论事理，要受文者承办事务，必须把事理论说明白。简言之，断就是要办什么事，论就是办这事的理由。论是断的前提，如果不把事理论清说透，断就会成为无源之水，无本之木，缺乏说服力。在古代公文中，由于文种不同，对事论断的情况也有差别，如下行的君命文种，比较偏重于断,凡戒敕、废立、告谕、政令等，都显示独断的至高权威，而上行文种的章、奏、表、议等则较侧重于论（当然也应有断），凡谏说、劝请、陈乞、弹劾、执异等，本身就需要有充分的理由，不论说何以达其目的。况且上奏文种面对的是国君这个特殊对象，更要情至理足。《谏逐客书》在这一点上，具有非常鲜明的特色。全文的断就是开头一句话：“臣闻吏议逐客，窃以为过矣。”希望通过这一判断成立，使秦王接受，并收回成命，不要逐。为此在下文展开了有力的论说。开头这一断语的特点是，在客卿已被逐的紧急情势下（《史记集解·新序》：“斯在逐中，道上上谏书。”），用非常警醒而委婉的言辞开宗明义，起句发意振聋发聩。本文尤具特色的更在其论的部分，对事理的论说充分深刻，令人信服。这里有必要指出两点，其一是用重笔浓墨，铺张排比，列举事例。如文中铺排了四君用客的大量事实，铺陈了秦王所喜爱的大量生活享用，由于事例充实，铺垫充足，加强了与下文的对比，因而得出的结论极其有力。而这些事例都有所依傍，且经过精心选择，因而显得可靠典型。从铺排的技巧来说，排比句接踵联翩，文意饱满，文气流畅，文势充沛,极有感染力。其二，在论证上的特点是正反并反复对比，层层深化。如在论证的首层，四君用客（实笔） 与“却客不内”（虚笔） 的对比，首层四君用客与次层秦王轻客的对比，次层重物与轻人的对比，处处在对比之中显示逐客之谬误。全文在逻辑关系上是步步推进，层层深化。时间上由远到近，推移有序：先言古代，次论现实，再次言及未来。在言及逐客的危害时，程度上由轻到重，步步升级：先说如果没有客卿，秦国就不会“富利”和“强大”；接着说“非秦者去，为客者逐”，“此非所以跨海内、制诸侯之术”，直接落到统一天下这个关键问题，比上层更切近要害；再说弃黔首、却宾客，是所谓“藉寇兵而赍盗粮”，资助了敌人削弱了自己，对秦国的不利更严重些；最后指出“今逐客以资敌国、损民以益仇，内自虚而外树怨于诸侯，求国无危，不可得也。”不仅不能统一天下，而且有亡国的危险，把逐客的危害引申到极点。这种由轻到重、步步推进的说理过程，避免一开始就突兀冲撞，造成相反结果，它符合人的心理接受规律。</p>
+<p>&amp;emsp;&amp;emsp;针对性</p>
+<p>&amp;emsp;&amp;emsp;再者《，谏逐客书》具有很强的针对性。公文的针对性一方面是指每件公文都是针对某一具体的事务而发，另方面也指公文具有比较具体的的受文对象，受文者具有确定性。周知性的公文读者面较宽,但也有一定的范围；下行文受文的面相对说要窄一些，在现代的公文中有的还规定了阅读传达范围；上行文一般是给一个上级机关，受文对象很具体。古代的上奏文种是专门给君主的，对象最明确。公文写作时都视受文者的不同情况进行斟酌，有的放矢。《谏逐客书》的针对性，从内容上来说，是对着逐客这事而发，全文紧紧扣住逐客以论说其错误。文章这样处理很高明，因这逐客的起因是韩国人郑国劝秦王修筑一条灌溉渠，其目的是企图以浩大的工程耗费秦国的财力，使之不能对外用兵，如果就此事进行辩解，显然是没有道理的。李斯避开这个起因不谈，只抓住逐客对秦不利来论说，完全从秦国的利益着眼，这就容易使秦王接受。另外，李斯当时也无辜受牵连，但他在上书中片言不涉及自己，这样完全符合公文的本质要求，徐望之说：“公文本质之可贵，贵在一字一句皆从民生国计上着想。”针对逐客对秦不利来论说，正是从国计民生着想的体现。</p>
+<p>&amp;emsp;&amp;emsp;《谏逐客书》的针对性，还表现在针对特定的受文者来采取谏说的策略。李斯上书是给秦王政这个具体的人看的，如果不熟悉这个人，不揣摩这个人的愿望、想法，不去迎合他的心理需求，那就很容易碰壁。对这个问题，刘勰有中肯的评价：“烦（顺） 情入机动言中务，虽批逆鳞而功成计合，此上出之喜说者也。”顺着秦王的感情、心理，引到统一六国的关键问题，符合主要任务的需要。当时秦王的最大欲望是兼并天下,凡是违反这一欲望，就难以立足，凡是利于达到这一欲望，就容易被接受。李斯紧紧抓住秦王的这一心理，把秦国的霸业作为整篇谏书的灵魂，贯串始终。在论说的首层以秦王政的祖先重用客卿造成“霸西戎”、“治强”、“散六国之从”、“蚕食诸侯”、“使秦成帝业”等成就去耸动秦王；在论说的次层则把用客卿提到“跨海内，制诸侯之术”的高度；再接着以古代五帝三王“不却众庶”无敌天下去打动秦王。总之，每个层次都反复论述这样一个根本的利害关系：纳客就能统一天下，逐客就有亡国危险。以利劝之，以害怵之，这就紧紧抓住了秦王的心，深深击中其要害，使秦王顺理成章地接纳其意见，并收回逐客令，达到了上书的目的。</p>
+<p>&amp;emsp;&amp;emsp;以上论述了《谏逐客书》是如何有针对性地、成功地对逐客之事加以论断，使该公文收到了显著的实效。实效性、针对性、对事加以论断，这三个特征在文中体现最为突出。当然，该文还有个别其他的公文特征，像当时李斯已在被逐之中，写这篇上书必须十分注意时效，除了“道上上谏书”急就此文之外，在写法上开头单刀直入，指出逐客之错，使秦王为之震动。可见首句发意、开门见山，既为当时紧急情势决定，也是公文时效性的要求。</p>
+]]></content>
+      <categories>
+        <category>摘记</category>
+      </categories>
+      <tags>
+        <tag>Other</tag>
+        <tag>History</tag>
+        <tag>Article</tag>
+      </tags>
+  </entry>
+</search>
